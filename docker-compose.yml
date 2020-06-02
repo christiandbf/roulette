@@ -17,11 +17,9 @@ services:
     ports:
       - "${PORT}:${PORT}"
     volumes:
-      - ./src/:/usr/src/app/src
+      - ./:/usr/src/app
       - /usr/src/app/node_modules
     links:
-      - redis
-    depends_on:
       - redis
 
   redis:
