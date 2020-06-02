@@ -1,0 +1,11 @@
+# Ignore everything
+**
+
+# Allow files and directories
+!/src/**
+!/package*.json
+!/tsconfig.json
+!/tslint.json
+!/eslintignore
+!/eslintrc.js
+!/prettierrc

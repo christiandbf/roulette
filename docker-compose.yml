@@ -1,0 +1,33 @@
+# Docker compose file used for development.
+
+version: "3"
+
+services:
+  roulette_api:
+    container_name: roulette
+    build: .
+    restart: unless-stopped
+    command: npm run dev
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DB: 0
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./src/:/usr/src/app/src
+      - /usr/src/app/node_modules
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:5.0.9-alpine3.11
+    restart: unless-stopped
+    command: redis-server --requirepass password
+    ports:
+      - "6379:6379"
