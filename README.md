@@ -79,3 +79,9 @@ PUT /roulettes/open/:id
   "name": "Sala1"
 }
 ```
+
+### List roulette
+
+```plain
+GET /roulettes
+```
