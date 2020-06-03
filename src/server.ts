@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import os from 'os';
 import { Response, Request, NextFunction } from 'express';
 import app from './app';
 import roulette from './controllers/roulette';

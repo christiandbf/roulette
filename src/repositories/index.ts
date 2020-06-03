@@ -1,7 +1,7 @@
 import Repository from './Repository';
 import redisRepositoryFactory from './redis';
 
-abstract class RepositorySingleton {
+abstract class RepositoryManager {
   private static repository: Repository;
 
   static getInstance(): Repository {
@@ -13,4 +13,4 @@ abstract class RepositorySingleton {
   }
 }
 
-export default RepositorySingleton;
+export default RepositoryManager;
