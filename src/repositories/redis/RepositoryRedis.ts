@@ -1,9 +1,9 @@
 import { Redis } from 'ioredis';
 
 abstract class RepositoryRedis<Entity, EntityDTO> {
-  private static readonly BASE_NAMESPACE = 'ROULETTE';
+  protected readonly BASE_NAMESPACE = 'ROULETTE';
 
-  private readonly redis: Redis;
+  protected readonly redis: Redis;
 
   constructor(redis: Redis) {
     this.redis = redis;
