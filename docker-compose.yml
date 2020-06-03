@@ -9,13 +9,13 @@ services:
     restart: unless-stopped
     command: npm run dev
     environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
+      NODE_ENV: "development"
+      PORT: 3000
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
       REDIS_DB: 0
     ports:
-      - "${PORT}:${PORT}"
+      - "3000:3000"
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
