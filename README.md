@@ -63,3 +63,19 @@ name: String
   "name": "Sala1"
 }
 ```
+
+### Open roulette
+
+```plain
+PUT /roulettes/open/:id
+```
+
+#### Response
+
+```plain
+{
+  "id": "307770a0-a542-11ea-bf59-d599c4ac862e",
+  "isOpen": false,
+  "name": "Sala1"
+}
+```

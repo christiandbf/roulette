@@ -31,12 +31,12 @@ class Roulette extends Entity<Props> {
   }
 
   public open(): void {
-    assert.ok(this.isOpen, 'This Roulette is already open');
+    assert.ok(!this.isOpen, 'This Roulette is already open');
     this.isOpen = true;
   }
 
   public close(): void {
-    assert.ok(!this.open, 'This Roulette is already close');
+    assert.ok(this.open, 'This Roulette is already close');
     this.isOpen = false;
   }
 }
