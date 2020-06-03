@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import os from 'os';
 import { Response, Request, NextFunction } from 'express';
 import app from './app';
 import roulette from './controllers/roulette';
@@ -28,7 +29,12 @@ const errorHandler = (
 };
 
 const main = async (): Promise<void> => {
+  app.get('/', (req: Request, res: Response) => {
+    res.status(200).send({ message: 'Service running properly' });
+  });
+
   roulette(app);
+
   app.use(errorHandler);
 
   await app.listen(PORT);
