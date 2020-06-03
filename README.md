@@ -1,13 +1,13 @@
 # Roulette
 
-Roulette API Rest built using TypeScript and Redis.
+Roulette Rest API built using TypeScript and Redis.
 
 ## Build the Docker image
 
 To build the Docker image, use the `docker build` command:
 
 ```shell
-docker build . -t roulette:latest --build-arg NODE_ENV=development
+docker build . -t roulette:latest --build-arg NODE_ENV=<environment>
 ```
 
 To stop the build on a specific stage, use the `target` option:
@@ -22,4 +22,44 @@ For **development**, use the `docker-compose up -d` command:
 
 ```shell
 docker-compose up -d
+```
+
+## API Endpoints
+
+### General information
+
+- All endpoints return either a JSON object or array.
+- For POST and PUT endpoints, the content to save is specified in the body request with Content-Type x-www-form-urlencoded or application/json.
+
+### Create roulette
+
+```plain
+POST /roulettes
+```
+
+You can use the following mime types in your Content-Type header and provide the data in the body:
+
+- x-www-form-urlencoded (key par value).
+- application/json (json).
+
+#### Parameters
+
+| Parameter | Type            | Mandatory | Description          |
+| --------- | --------------- | --------- | -------------------- |
+| Values    | Key-par or JSON | Yes       | Values to save in DB |
+
+The schema is defined as follow. **All the properties are required**.
+
+```plain
+name: String
+```
+
+#### Response
+
+```plain
+{
+  "id": "307770a0-a542-11ea-bf59-d599c4ac862e",
+  "isOpen": false,
+  "name": "Sala1"
+}
 ```
