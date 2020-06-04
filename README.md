@@ -80,8 +80,62 @@ PUT /roulettes/open/:id
 }
 ```
 
+### Close roulette
+
+```plain
+PUT /roulettes/close/:id
+```
+
+#### Response
+
+```plain
+{
+  "result": "RED",
+  "betWinners": ["20ed3270-a603-11ea-a08a-315bb84a695d"],
+  "betLlossers": []
+}
+```
+
 ### List roulette
 
 ```plain
 GET /roulettes
+```
+
+### Create bet
+
+```plain
+POST /bets
+```
+
+You can use the following mime types in your Content-Type header and provide the data in the body:
+
+- x-www-form-urlencoded (key par value).
+- application/json (json).
+
+#### Parameters
+
+| Parameter | Type            | Mandatory | Description          |
+| --------- | --------------- | --------- | -------------------- |
+| Values    | Key-par or JSON | Yes       | Values to save in DB |
+| USER      | HEADER          | Yes       | User UUID            |
+
+The schema is defined as follow. **All the properties are required**.
+
+```plain
+selection: String
+rouletteId: String (UUID)
+amount: Number
+```
+
+#### Response
+
+```plain
+{
+  "id": "dc664320-a608-11ea-aace-d1ab6ba55deb",
+  "rouletteId": "20ed3270-a603-11ea-a08a-315bb84a695d",
+  "amount": 1000,
+  "selection": "BLACK",
+  "userId": "20ed3270-a603-11ea-a08a-315bb84a695d"
+}
 ```

@@ -3,10 +3,12 @@ import { strict as assert } from 'assert';
 import { Redis } from 'ioredis';
 import RepositoryRedis from './RepositoryRedis';
 import { BetRepository } from '../Repository';
-import Bet from '../../entities/Bet';
+import Bet from '../../domain/BetEntity';
+import Option from '../../domain/OptionValueObject';
 
 interface BetDTO {
   id: string;
+  selection: string;
   rouletteId: string;
   userId: string;
   amount: number;
@@ -62,8 +64,11 @@ class BetRepositoryRedis extends RepositoryRedis<Bet, BetDTO>
   }
 
   protected toDomain(betDTO: BetDTO): Bet {
+    const option: Option = new Option({ selection: betDTO.selection });
+
     return new Bet({
       id: betDTO.id,
+      option: option,
       rouletteId: betDTO.rouletteId,
       userId: betDTO.userId,
       amount: betDTO.amount
@@ -73,6 +78,7 @@ class BetRepositoryRedis extends RepositoryRedis<Bet, BetDTO>
   protected toPersistence(bet: Bet): BetDTO {
     return {
       id: bet.getId(),
+      selection: bet.getOption().value,
       rouletteId: bet.getrouletteId(),
       userId: bet.getUserId(),
       amount: bet.getAmount()

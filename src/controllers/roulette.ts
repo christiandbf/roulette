@@ -3,6 +3,7 @@ import { check, param } from 'express-validator';
 import validation from '../middlewares/validation';
 import CreateRouletteUseCase from '../usecases/CreateRouletteUseCase';
 import OpenRouletteUseCase from '../usecases/OpenRouletteUseCase';
+import CloseRouletteUseCase from '../usecases/CloseRouletteUseCase';
 import ListRouletteUseCase from '../usecases/ListRouletteUseCase';
 
 const BASE_PATH = 'roulettes';
@@ -43,6 +44,21 @@ const openRoulette = async (
   }
 };
 
+const closeRoulette = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const rouletteId: string = req.params.id;
+    const closeRouletteUseCase = new CloseRouletteUseCase();
+    const resultDTO = await closeRouletteUseCase.execute({ id: rouletteId });
+    res.status(200).send(resultDTO);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const listRoulette = async (
   req: Request,
   res: Response,
@@ -70,6 +86,13 @@ export default (app: Application): void => {
     [param('id').isUUID()],
     validation,
     openRoulette
+  );
+
+  app.put(
+    `/${BASE_PATH}/close/:id`,
+    [param('id').isUUID()],
+    validation,
+    closeRoulette
   );
 
   app.get(`/${BASE_PATH}`, listRoulette);

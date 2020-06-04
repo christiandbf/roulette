@@ -1,7 +1,7 @@
 import UseCase from './UseCase';
 import RepositoryManager from '../repositories';
 import Repository from '../repositories/Repository';
-import Roulette from '../entities/Roulette';
+import Roulette from '../domain/RouletteEntity';
 
 interface RouletteRequestDTO {
   name: string;

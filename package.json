@@ -36,6 +36,7 @@
     "express-validator": "^6.5.0",
     "ioredis": "^4.16.1",
     "morgan": "^1.9.1",
+    "shallow-equal-object": "^1.1.1",
     "uuid": "^7.0.3"
   },
   "devDependencies": {

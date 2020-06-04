@@ -1,8 +1,10 @@
 import { strict as assert } from 'assert';
 import Entity from './Entity';
+import Option from './OptionValueObject';
 
 interface Props {
   id?: string;
+  option: Option;
   rouletteId: string;
   userId: string;
   amount: number;
@@ -14,9 +16,11 @@ class Bet extends Entity<Props> {
   private readonly rouletteId: string;
   private readonly userId: string;
   private readonly amount: number;
+  private readonly option: Option;
 
   constructor(props: Props) {
     super(props, props.id);
+    assert.ok(props.option, 'Option should be provided');
     assert.ok(props.amount < this.MAX_AMOUNT, 'Maximum bet amount exceeded');
     assert.ok(
       this.UUID_REGEXP.test(props.rouletteId),
@@ -26,6 +30,7 @@ class Bet extends Entity<Props> {
       this.UUID_REGEXP.test(props.userId),
       'User ID is not a valid UUID'
     );
+    this.option = props.option;
     this.rouletteId = props.rouletteId;
     this.userId = props.userId;
     this.amount = props.amount;
@@ -41,6 +46,10 @@ class Bet extends Entity<Props> {
 
   public getAmount(): number {
     return this.amount;
+  }
+
+  public getOption(): Option {
+    return this.option;
   }
 }
 

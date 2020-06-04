@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Redis } from 'ioredis';
 import RepositoryRedis from './RepositoryRedis';
 import { RouletteRepository } from '../Repository';
-import Roulette from '../../entities/Roulette';
+import Roulette from '../../domain/RouletteEntity';
 
 interface RouletteDTO {
   id: string;

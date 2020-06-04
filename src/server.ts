@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { AssertionError } from 'assert';
 import { Response, Request, NextFunction } from 'express';
 import app from './app';
 import roulette from './controllers/roulette';
-import { AssertionError } from 'assert';
+import bet from './controllers/bet';
 
 const PORT: string = process.env['PORT'] || '3000';
 
@@ -33,6 +34,7 @@ const main = async (): Promise<void> => {
   });
 
   roulette(app);
+  bet(app);
 
   app.use(errorHandler);
 

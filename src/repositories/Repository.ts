@@ -1,7 +1,7 @@
 import Writable from './Writable';
 import Readable from './Readable';
-import Roulette from '../entities/Roulette';
-import Bet from '../entities/Bet';
+import Roulette from '../domain/RouletteEntity';
+import Bet from '../domain/BetEntity';
 
 export interface RouletteRepository
   extends Writable<Roulette>,
