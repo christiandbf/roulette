@@ -3,31 +3,21 @@ import UseCase from './UseCase';
 import Bet from '../domain/BetEntity';
 import Option from '../domain/OptionValueObject';
 import Roulette from '../domain/RouletteEntity';
+import { GameResponseModel } from '../models/Game';
+import { BetResponseModel } from '../models/Bet';
 
-interface RequestModel {
-  id: string;
-}
-
-interface ResponseModel {
-  result: string;
-  betWinners: Array<string>;
-  betLlossers: Array<string>;
-}
-
-class CloseRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
+class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
   constructor() {
     super();
   }
 
-  async execute(request: RequestModel): Promise<ResponseModel> {
+  async execute(id: string): Promise<GameResponseModel> {
     const roulette: Roulette | null = await this.repository.roulette.findById(
-      request.id
+      id
     );
     assert.ok(roulette, 'Roulette does not exist');
     roulette.close();
-    const bets: Array<Bet> = await this.repository.bet.findByRouletteId(
-      request.id
-    );
+    const bets: Array<Bet> = await this.repository.bet.findByRouletteId(id);
     const rouletteResult: Option = Option.getRandomOption();
     const betWinners: Array<Bet> = bets.filter((bet: Bet): boolean =>
       bet.getOption().equals(rouletteResult)
@@ -39,8 +29,29 @@ class CloseRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
 
     return {
       result: rouletteResult.value,
-      betWinners: betWinners.map((bet: Bet): string => bet.getId()),
-      betLlossers: betLlossers.map((bet: Bet): string => bet.getId())
+      roulette: {
+        id: roulette.getId(),
+        isOpen: roulette.getIsOpen(),
+        name: roulette.getName()
+      },
+      betWinners: betWinners.map(
+        (bet: Bet): BetResponseModel => ({
+          id: bet.getId(),
+          rouletteId: bet.getrouletteId(),
+          selection: bet.getOption().value,
+          amount: bet.getAmount(),
+          userId: bet.getId()
+        })
+      ),
+      betLosers: betLlossers.map(
+        (bet: Bet): BetResponseModel => ({
+          id: bet.getId(),
+          rouletteId: bet.getrouletteId(),
+          selection: bet.getOption().value,
+          amount: bet.getAmount(),
+          userId: bet.getId()
+        })
+      )
     };
   }
 }

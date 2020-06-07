@@ -1,22 +1,19 @@
 import UseCase from './UseCase';
 import Roulette from '../domain/RouletteEntity';
+import {
+  RouletteRequestModel,
+  RouletteResponseModel
+} from '../models/Roulette';
 
-interface RequestModel {
-  name: string;
-}
-
-interface ResponseModel {
-  id: string;
-  isOpen: boolean;
-  name: string;
-}
-
-class CreateRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
+class CreateRouletteUseCase extends UseCase<
+  RouletteRequestModel,
+  RouletteResponseModel
+> {
   constructor() {
     super();
   }
 
-  async execute(request: RequestModel): Promise<ResponseModel> {
+  async execute(request: RouletteRequestModel): Promise<RouletteResponseModel> {
     const roulette = new Roulette({ name: request.name });
     await this.repository.roulette.create(roulette);
 

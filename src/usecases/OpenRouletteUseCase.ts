@@ -1,25 +1,16 @@
 import { strict as assert } from 'assert';
 import UseCase from './UseCase';
 import Roulette from '../domain/RouletteEntity';
+import { RouletteResponseModel } from '../models/Roulette';
 
-interface RequestModel {
-  id: string;
-}
-
-interface ResponseModel {
-  id: string;
-  isOpen: boolean;
-  name: string;
-}
-
-class OpenRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
+class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
   constructor() {
     super();
   }
 
-  async execute(request: RequestModel): Promise<ResponseModel> {
+  async execute(id: string): Promise<RouletteResponseModel> {
     const roulette: Roulette | null = await this.repository.roulette.findById(
-      request.id
+      id
     );
     assert.ok(roulette, 'Roulette does not exist');
     roulette.open();

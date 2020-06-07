@@ -5,12 +5,10 @@ import CreateRouletteUseCase from '../../usecases/CreateRouletteUseCase';
 import OpenRouletteUseCase from '../../usecases/OpenRouletteUseCase';
 import CloseRouletteUseCase from '../../usecases/CloseRouletteUseCase';
 import ListRouletteUseCase from '../../usecases/ListRouletteUseCase';
+import { RouletteResponseModel } from '../../models/Roulette';
+import { GameResponseModel } from '../../models/Game';
 
 const router: Router = Router();
-
-interface CreateRouletteBody {
-  name: string;
-}
 
 router.post(
   `/`,
@@ -18,12 +16,14 @@ router.post(
   validation,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const createRouletteBody: CreateRouletteBody = req.body as CreateRouletteBody;
+      const { name } = req.body;
       const createRouletteUseCase = new CreateRouletteUseCase();
-      const rouletteDTO = await createRouletteUseCase.execute({
-        name: createRouletteBody.name
-      });
-      res.status(201).send(rouletteDTO);
+      const rouletteResponseModel: RouletteResponseModel = await createRouletteUseCase.execute(
+        {
+          name: name
+        }
+      );
+      res.status(201).send(rouletteResponseModel);
     } catch (error) {
       next(error);
     }
@@ -38,8 +38,10 @@ router.put(
     try {
       const rouletteId: string = req.params.id;
       const openRouletteUseCase = new OpenRouletteUseCase();
-      const rouletteDTO = await openRouletteUseCase.execute({ id: rouletteId });
-      res.status(200).send(rouletteDTO);
+      const rouletteResponseModel = await openRouletteUseCase.execute(
+        rouletteId
+      );
+      res.status(200).send(rouletteResponseModel);
     } catch (error) {
       next(error);
     }
@@ -54,8 +56,10 @@ router.put(
     try {
       const rouletteId: string = req.params.id;
       const closeRouletteUseCase = new CloseRouletteUseCase();
-      const resultDTO = await closeRouletteUseCase.execute({ id: rouletteId });
-      res.status(200).send(resultDTO);
+      const gameResponseModel: GameResponseModel = await closeRouletteUseCase.execute(
+        rouletteId
+      );
+      res.status(200).send(gameResponseModel);
     } catch (error) {
       next(error);
     }

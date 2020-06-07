@@ -3,28 +3,14 @@ import UseCase from './UseCase';
 import Bet from '../domain/BetEntity';
 import Option from '../domain/OptionValueObject';
 import Roulette from '../domain/RouletteEntity';
+import { BetRequestModel, BetResponseModel } from '../models/Bet';
 
-interface RequestModel {
-  selection: string;
-  rouletteId: string;
-  userId: string;
-  amount: number;
-}
-
-interface ResponseModel {
-  id: string;
-  selection: string;
-  rouletteId: string;
-  userId: string;
-  amount: number;
-}
-
-class CreateBetUseCase extends UseCase<RequestModel, ResponseModel> {
+class CreateBetUseCase extends UseCase<BetRequestModel, BetResponseModel> {
   constructor() {
     super();
   }
 
-  async execute(request: RequestModel): Promise<ResponseModel> {
+  async execute(request: BetRequestModel): Promise<BetResponseModel> {
     const roulette: Roulette | null = await this.repository.roulette.findById(
       request.rouletteId
     );
