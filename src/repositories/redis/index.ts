@@ -12,14 +12,14 @@ const REDIS_DB: number = process.env['REDIS_DB']
   ? parseInt(process.env['REDIS_DB'])
   : 0;
 
-const redis = new Redis({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  password: REDIS_PASSWORD,
-  db: REDIS_DB
-});
-
 export default (): Repository => {
+  const redis = new Redis({
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+    password: REDIS_PASSWORD,
+    db: REDIS_DB
+  });
+
   const roulette: RouletteRepository = new RouletteRepositoryRedis(redis);
   const bet: BetRepository = new BetRepositoryRedis(redis);
 
