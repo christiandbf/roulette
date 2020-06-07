@@ -1,12 +1,14 @@
 import { Response, Request, NextFunction, Router } from 'express';
 import { check, param } from 'express-validator';
 import validation from '../middlewares/validation';
-import CreateRouletteUseCase from '../../core/usecases/CreateRouletteUseCase';
-import OpenRouletteUseCase from '../../core/usecases/OpenRouletteUseCase';
-import CloseRouletteUseCase from '../../core/usecases/CloseRouletteUseCase';
-import ListRouletteUseCase from '../../core/usecases/ListRouletteUseCase';
-import { RouletteResponseModel } from '../../core/models/Roulette';
-import { GameResponseModel } from '../../core/models/Game';
+import {
+  CreateRouletteUseCase,
+  OpenRouletteUseCase,
+  CloseRouletteUseCase,
+  ListRouletteUseCase,
+  RouletteResponseModel,
+  GameResponseModel
+} from '../../core';
 
 const router: Router = Router();
 

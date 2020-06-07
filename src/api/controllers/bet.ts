@@ -2,8 +2,7 @@ import { strict as assert } from 'assert';
 import { Response, Request, NextFunction, Router } from 'express';
 import { check, header } from 'express-validator';
 import validation from '../middlewares/validation';
-import CreateBetUseCase from '../../core/usecases/CreateBetUseCase';
-import { BetResponseModel } from '../../core/models/Bet';
+import { CreateBetUseCase, BetResponseModel } from '../../core';
 
 const router: Router = Router();
 
