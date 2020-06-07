@@ -1,10 +1,10 @@
 import { Response, Request, NextFunction, Router } from 'express';
 import { check, param } from 'express-validator';
 import validation from '../middlewares/validation';
-import CreateRouletteUseCase from '../usecases/CreateRouletteUseCase';
-import OpenRouletteUseCase from '../usecases/OpenRouletteUseCase';
-import CloseRouletteUseCase from '../usecases/CloseRouletteUseCase';
-import ListRouletteUseCase from '../usecases/ListRouletteUseCase';
+import CreateRouletteUseCase from '../../usecases/CreateRouletteUseCase';
+import OpenRouletteUseCase from '../../usecases/OpenRouletteUseCase';
+import CloseRouletteUseCase from '../../usecases/CloseRouletteUseCase';
+import ListRouletteUseCase from '../../usecases/ListRouletteUseCase';
 
 const router: Router = Router();
 

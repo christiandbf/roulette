@@ -8,15 +8,14 @@
   "homepage": "https://github.com/christiandbf/roulette/blob/master/README.md",
   "repository": "github.com:christiandbf/roulette.git",
   "private": true,
-  "main": "dist/server.js",
   "scripts": {
     "clean": "rimraf dist",
     "tsc": "tsc",
     "lint": "eslint . --ext .ts --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "build": "npm-run-all clean lint prettier-format tsc",
-    "dev": "nodemon --watch src -e ts --exec ts-node ./src/server",
-    "start": "node ."
+    "dev": "nodemon --watch src -e ts --exec ts-node ./src/api/server.ts",
+    "start": "node ./dist/api/server.js"
   },
   "husky": {
     "hooks": {
