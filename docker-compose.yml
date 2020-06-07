@@ -8,9 +8,11 @@ services:
     build: .
     restart: unless-stopped
     command: npm run dev
+    env_file: .env
     environment:
       NODE_ENV: "development"
       PORT: 3000
+      REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
       REDIS_DB: 0
