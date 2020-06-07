@@ -2,8 +2,8 @@ import { strict as assert } from 'assert';
 import { Response, Request, NextFunction, Router } from 'express';
 import { check, header } from 'express-validator';
 import validation from '../middlewares/validation';
-import CreateBetUseCase from '../../usecases/CreateBetUseCase';
-import { BetResponseModel } from '../../models/Bet';
+import CreateBetUseCase from '../../core/usecases/CreateBetUseCase';
+import { BetResponseModel } from '../../core/models/Bet';
 
 const router: Router = Router();
 
