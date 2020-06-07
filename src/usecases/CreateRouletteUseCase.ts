@@ -1,27 +1,22 @@
 import UseCase from './UseCase';
-import RepositoryManager from '../repositories';
-import Repository from '../repositories/Repository';
 import Roulette from '../domain/RouletteEntity';
 
-interface RouletteRequestDTO {
+interface RequestModel {
   name: string;
 }
 
-interface RouletteResponseDTO {
+interface ResponseModel {
   id: string;
   isOpen: boolean;
   name: string;
 }
 
-class CreateRouletteUseCase
-  implements UseCase<RouletteRequestDTO, RouletteResponseDTO> {
-  private readonly repository: Repository;
-
+class CreateRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
   constructor() {
-    this.repository = RepositoryManager.getInstance();
+    super();
   }
 
-  async execute(request: RouletteRequestDTO): Promise<RouletteResponseDTO> {
+  async execute(request: RequestModel): Promise<ResponseModel> {
     const roulette = new Roulette({ name: request.name });
     await this.repository.roulette.create(roulette);
 

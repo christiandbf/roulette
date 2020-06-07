@@ -1,26 +1,22 @@
 import UseCase from './UseCase';
-import RepositoryManager from '../repositories';
-import Repository from '../repositories/Repository';
 import Roulette from '../domain/RouletteEntity';
 
-interface RouletteResponseDTO {
+interface ResponseModel {
   id: string;
   isOpen: boolean;
   name: string;
 }
 
-class ListRouletteUseCase implements UseCase<{}, RouletteResponseDTO[]> {
-  private readonly repository: Repository;
-
+class ListRouletteUseCase extends UseCase<{}, ResponseModel[]> {
   constructor() {
-    this.repository = RepositoryManager.getInstance();
+    super();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(request: {}): Promise<RouletteResponseDTO[]> {
+  async execute(request: {}): Promise<ResponseModel[]> {
     const roulettes: Roulette[] = await this.repository.roulette.find();
-    const rouletteDTOs: RouletteResponseDTO[] = roulettes.map(
-      (roulette: Roulette): RouletteResponseDTO => ({
+    const rouletteDTOs: ResponseModel[] = roulettes.map(
+      (roulette: Roulette): ResponseModel => ({
         id: roulette.getId(),
         isOpen: roulette.getIsOpen(),
         name: roulette.getName()

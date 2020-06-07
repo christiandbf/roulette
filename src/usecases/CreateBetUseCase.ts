@@ -1,19 +1,17 @@
 import { strict as assert } from 'assert';
 import UseCase from './UseCase';
-import RepositoryManager from '../repositories';
-import Repository from '../repositories/Repository';
 import Bet from '../domain/BetEntity';
 import Option from '../domain/OptionValueObject';
 import Roulette from '../domain/RouletteEntity';
 
-interface BetRequestDTO {
+interface RequestModel {
   selection: string;
   rouletteId: string;
   userId: string;
   amount: number;
 }
 
-interface BetResponseDTO {
+interface ResponseModel {
   id: string;
   selection: string;
   rouletteId: string;
@@ -21,14 +19,12 @@ interface BetResponseDTO {
   amount: number;
 }
 
-class CreateBetUseCase implements UseCase<BetRequestDTO, BetResponseDTO> {
-  private readonly repository: Repository;
-
+class CreateBetUseCase extends UseCase<RequestModel, ResponseModel> {
   constructor() {
-    this.repository = RepositoryManager.getInstance();
+    super();
   }
 
-  async execute(request: BetRequestDTO): Promise<BetResponseDTO> {
+  async execute(request: RequestModel): Promise<ResponseModel> {
     const roulette: Roulette | null = await this.repository.roulette.findById(
       request.rouletteId
     );

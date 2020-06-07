@@ -1,30 +1,25 @@
 import { strict as assert } from 'assert';
 import UseCase from './UseCase';
-import RepositoryManager from '../repositories';
-import Repository from '../repositories/Repository';
 import Bet from '../domain/BetEntity';
 import Option from '../domain/OptionValueObject';
 import Roulette from '../domain/RouletteEntity';
 
-interface RouletteRequestDTO {
+interface RequestModel {
   id: string;
 }
 
-interface RouletteResponseDTO {
+interface ResponseModel {
   result: string;
   betWinners: Array<string>;
   betLlossers: Array<string>;
 }
 
-class CloseRouletteUseCase
-  implements UseCase<RouletteRequestDTO, RouletteResponseDTO> {
-  private readonly repository: Repository;
-
+class CloseRouletteUseCase extends UseCase<RequestModel, ResponseModel> {
   constructor() {
-    this.repository = RepositoryManager.getInstance();
+    super();
   }
 
-  async execute(request: RouletteRequestDTO): Promise<RouletteResponseDTO> {
+  async execute(request: RequestModel): Promise<ResponseModel> {
     const roulette: Roulette | null = await this.repository.roulette.findById(
       request.id
     );
