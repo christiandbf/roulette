@@ -16,9 +16,11 @@ class Roulette extends Entity<Props> {
   constructor(props: Props) {
     super(props, props.id);
     assert.ok(this.NAME_REGEX.test(props.name), 'Name is not valid');
-    this.name =
-      props.name.trim().charAt(0).toUpperCase() +
-      props.name.trim().slice(1).toLowerCase();
+    this.name = props.name
+      .toLowerCase()
+      .split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ');
     this.isOpen = props.isOpen || false;
   }
 
