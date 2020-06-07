@@ -8,14 +8,14 @@ interface Props {
 }
 
 class Roulette extends Entity<Props> {
-  private readonly NAME_REGEX: RegExp = /^[a-zA-Z ]+$/;
+  private readonly MIN_CHARACTERS = 2;
 
   private readonly name: string;
   private isOpen: boolean;
 
   constructor(props: Props) {
     super(props, props.id);
-    assert.ok(this.NAME_REGEX.test(props.name), 'Name is not valid');
+    assert.ok(props.name.length > this.MIN_CHARACTERS, 'Name is not valid');
     this.name = props.name
       .toLowerCase()
       .split(' ')
