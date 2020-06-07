@@ -1,6 +1,7 @@
 import UseCase from './UseCase';
 import Roulette from '../domain/RouletteEntity';
 import { RouletteResponseModel } from '../models/Roulette';
+import RouletteMapper from '../mappers/Roulette';
 
 class ListRouletteUseCase extends UseCase<{}, RouletteResponseModel[]> {
   constructor() {
@@ -11,11 +12,8 @@ class ListRouletteUseCase extends UseCase<{}, RouletteResponseModel[]> {
   async execute(request: {}): Promise<RouletteResponseModel[]> {
     const roulettes: Roulette[] = await this.repository.roulette.find();
     const roletteResponseModels: RouletteResponseModel[] = roulettes.map(
-      (roulette: Roulette): RouletteResponseModel => ({
-        id: roulette.getId(),
-        isOpen: roulette.getIsOpen(),
-        name: roulette.getName()
-      })
+      (roulette: Roulette): RouletteResponseModel =>
+        RouletteMapper.toModel(roulette)
     );
 
     return roletteResponseModels;

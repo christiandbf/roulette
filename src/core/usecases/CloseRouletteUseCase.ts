@@ -5,6 +5,8 @@ import Option from '../domain/OptionValueObject';
 import Roulette from '../domain/RouletteEntity';
 import { GameResponseModel } from '../models/Game';
 import { BetResponseModel } from '../models/Bet';
+import RouletteMapper from '../mappers/Roulette';
+import BetMapper from '../mappers/Bet';
 
 class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
   constructor() {
@@ -29,28 +31,12 @@ class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
 
     return {
       result: rouletteResult.value,
-      roulette: {
-        id: roulette.getId(),
-        isOpen: roulette.getIsOpen(),
-        name: roulette.getName()
-      },
+      roulette: RouletteMapper.toModel(roulette),
       betWinners: betWinners.map(
-        (bet: Bet): BetResponseModel => ({
-          id: bet.getId(),
-          rouletteId: bet.getrouletteId(),
-          selection: bet.getOption().value,
-          amount: bet.getAmount(),
-          userId: bet.getId()
-        })
+        (bet: Bet): BetResponseModel => BetMapper.toModel(bet)
       ),
       betLosers: betLlossers.map(
-        (bet: Bet): BetResponseModel => ({
-          id: bet.getId(),
-          rouletteId: bet.getrouletteId(),
-          selection: bet.getOption().value,
-          amount: bet.getAmount(),
-          userId: bet.getId()
-        })
+        (bet: Bet): BetResponseModel => BetMapper.toModel(bet)
       )
     };
   }

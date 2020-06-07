@@ -1,9 +1,9 @@
 import UseCase from './UseCase';
-import Roulette from '../domain/RouletteEntity';
 import {
   RouletteRequestModel,
   RouletteResponseModel
 } from '../models/Roulette';
+import RouletteMapper from '../mappers/Roulette';
 
 class CreateRouletteUseCase extends UseCase<
   RouletteRequestModel,
@@ -14,14 +14,10 @@ class CreateRouletteUseCase extends UseCase<
   }
 
   async execute(request: RouletteRequestModel): Promise<RouletteResponseModel> {
-    const roulette = new Roulette({ name: request.name });
+    const roulette = RouletteMapper.toEntity(request);
     await this.repository.roulette.create(roulette);
 
-    return {
-      id: roulette.getId(),
-      isOpen: roulette.getIsOpen(),
-      name: roulette.getName()
-    };
+    return RouletteMapper.toModel(roulette);
   }
 }
 

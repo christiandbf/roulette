@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import UseCase from './UseCase';
 import Roulette from '../domain/RouletteEntity';
 import { RouletteResponseModel } from '../models/Roulette';
+import RouletteMapper from '../mappers/Roulette';
 
 class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
   constructor() {
@@ -16,11 +17,7 @@ class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
     roulette.open();
     this.repository.roulette.update(roulette);
 
-    return {
-      id: roulette.getId(),
-      isOpen: roulette.getIsOpen(),
-      name: roulette.getName()
-    };
+    return RouletteMapper.toModel(roulette);
   }
 }
 
