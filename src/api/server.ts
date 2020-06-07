@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import healthcheck from './controllers/healthcheck';
 import roulette from './controllers/roulette';
