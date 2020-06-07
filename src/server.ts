@@ -1,41 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AssertionError } from 'assert';
-import { Response, Request, NextFunction } from 'express';
 import app from './app';
+import healthcheck from './controllers/healthcheck';
 import roulette from './controllers/roulette';
 import bet from './controllers/bet';
+import errorHandler from './middlewares/errorHandler';
 
 const PORT: string = process.env['PORT'] || '3000';
 
-const errorHandler = (
-  error: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.log(
-      `Method: ${req.method} URL: ${req.url} Error: ${error.message}`
-    );
-  }
-
-  if (error instanceof AssertionError) {
-    res.status(400).send({ message: error.message, erros: [] });
-    return;
-  }
-
-  res.status(500).send({ error: error.message });
-};
-
 const main = async (): Promise<void> => {
-  app.get('/', (req: Request, res: Response) => {
-    res.status(200).send({ message: 'Service running properly' });
-  });
-
-  roulette(app);
-  bet(app);
-
+  app.get('/', healthcheck);
+  app.use('/roulettes', roulette);
+  app.use('/bets', bet);
   app.use(errorHandler);
 
   await app.listen(PORT);

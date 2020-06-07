@@ -1,10 +1,10 @@
 import { strict as assert } from 'assert';
-import { Response, Request, Application, NextFunction } from 'express';
+import { Response, Request, NextFunction, Router } from 'express';
 import { check, header } from 'express-validator';
 import validation from '../middlewares/validation';
 import CreateBetUseCase from '../usecases/CreateBetUseCase';
 
-const BASE_PATH = 'bets';
+const router: Router = Router();
 
 interface CreateBetBody {
   selection: string;
@@ -12,39 +12,33 @@ interface CreateBetBody {
   amount: number;
 }
 
-const createBet = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const createBetBody: CreateBetBody = req.body as CreateBetBody;
-    const userId: string | undefined = req.get('user');
-    assert.ok(userId, 'User ID has not been sent');
-    const createRouletteUseCase = new CreateBetUseCase();
-    const rouletteDTO = await createRouletteUseCase.execute({
-      userId: userId,
-      amount: createBetBody.amount,
-      rouletteId: createBetBody.rouletteId,
-      selection: createBetBody.selection
-    });
+router.post(
+  `/`,
+  [
+    check('selection').isString().notEmpty(),
+    check('rouletteId').isUUID(),
+    check('amount').isNumeric(),
+    header('user').isUUID()
+  ],
+  validation,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const createBetBody: CreateBetBody = req.body as CreateBetBody;
+      const userId: string | undefined = req.get('user');
+      assert.ok(userId, 'User ID has not been sent');
+      const createRouletteUseCase = new CreateBetUseCase();
+      const rouletteDTO = await createRouletteUseCase.execute({
+        userId: userId,
+        amount: createBetBody.amount,
+        rouletteId: createBetBody.rouletteId,
+        selection: createBetBody.selection
+      });
 
-    res.status(201).send(rouletteDTO);
-  } catch (error) {
-    next(error);
+      res.status(201).send(rouletteDTO);
+    } catch (error) {
+      next(error);
+    }
   }
-};
+);
 
-export default (app: Application): void => {
-  app.post(
-    `/${BASE_PATH}`,
-    [
-      check('selection').isString().notEmpty(),
-      check('rouletteId').isUUID(),
-      check('amount').isNumeric(),
-      header('user').isUUID()
-    ],
-    validation,
-    createBet
-  );
-};
+export default router;
