@@ -6,12 +6,12 @@ interface Props {
 }
 
 class OptionValueObject extends ValueObject<Props, string> {
-  private readonly SELECTION_REGEX: RegExp = /^([1-9]|[12]\d|3[0-6])|(BLACK|RED)$/;
+  private readonly SELECTION_REGEX: RegExp = /^([1-9]|[12]\d|3[0-6])$|^(BLACK|RED)$/i;
   private static readonly TO_NUMBER: number = 36;
   private static readonly COLORS: [string, string] = ['BLACK', 'RED'];
 
   constructor(props: Props) {
-    super(props, props.selection);
+    super(props, props.selection.toUpperCase());
     assert.ok(
       this.SELECTION_REGEX.test(props.selection),
       'Selection is not valid'
