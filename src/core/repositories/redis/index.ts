@@ -3,7 +3,7 @@ import Repository, { RouletteRepository, BetRepository } from '../Repository';
 import RouletteRepositoryRedis from './RouletteRepositoryRedis';
 import BetRepositoryRedis from './BetRepositoryRedis';
 
-const REDIS_HOST: string = process.env['REDIS_HOST'] || 'redis';
+const REDIS_HOST: string = process.env['REDIS_HOST'] || '127.0.0.1';
 const REDIS_PORT: number = process.env['REDIS_PORT']
   ? parseInt(process.env['REDIS_PORT'])
   : 6379;

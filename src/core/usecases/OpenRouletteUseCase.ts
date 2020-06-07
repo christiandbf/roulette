@@ -3,6 +3,9 @@ import UseCase from './UseCase';
 import Roulette from '../domain/RouletteEntity';
 import { RouletteResponseModel } from '../models/Roulette';
 import RouletteMapper from '../mappers/Roulette';
+import Notification, {
+  NotificationProtocol
+} from '../services/NotificationManager';
 
 class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
   constructor() {
@@ -16,6 +19,10 @@ class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
     assert.ok(roulette, 'Roulette does not exist');
     roulette.open();
     this.repository.roulette.update(roulette);
+    const notification = Notification.getInstance({
+      protocol: NotificationProtocol.SNS
+    });
+    await notification.notifyRouletteOpen(roulette);
 
     return RouletteMapper.toModel(roulette);
   }
