@@ -7,7 +7,7 @@ Roulette Rest API built using TypeScript and Redis.
 To build the Docker image, use the `docker build` command:
 
 ```shell
-docker build . -t roulette:latest --build-arg NODE_ENV=<environment>
+docker build . -t roulette:latest
 ```
 
 To stop the build on a specific stage, use the `target` option:
