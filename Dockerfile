@@ -8,8 +8,6 @@ RUN npm run tsc
 
 FROM node:12.14.1-alpine AS main
 
-ARG NODE_ENV
-
 WORKDIR /usr/src/app
 
 COPY --from=builder ./usr/src/app/package* ./
