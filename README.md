@@ -1,5 +1,7 @@
 # Roulette
 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=christiandbf_roulette)](https://sonarcloud.io/dashboard?id=christiandbf_roulette)
+
 Roulette Rest API built using TypeScript and Redis.
 
 ## Build the Docker image
