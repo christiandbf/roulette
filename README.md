@@ -4,6 +4,10 @@
 
 Roulette Rest API built using TypeScript and Redis.
 
+## Architecture
+
+![Architecture](./assets/Architecture.png)
+
 ## Build the Docker image
 
 To build the Docker image, use the `docker build` command:
