@@ -1,0 +1,448 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS Cloud Formation template - Roulette
+Parameters:
+  DeployEnvironment:
+    Type: String
+    Default: development
+    AllowedValues: ["production", "testing", "development"]
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Select a VPC that allows instances access to the Internet.
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the ECS instances.
+  SubnetId:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Select at least two subnets in your selected VPC.
+  DesiredCapacity:
+    Type: Number
+    Default: 1
+    Description: Number of instances to launch in your ECS cluster.
+  MaxSize:
+    Type: Number
+    Default: 10
+    Description: Maximum number of instances that can be launched in your ECS cluster.
+  ImageTag:
+    Type: String
+    Default: latest
+    Description: Please choose docker image tag.
+  ContainerPort:
+    Type: Number
+    Default: 80
+  InstanceType:
+    Type: String
+    Description: EC2 instance type.
+    Default: t3a.micro
+    AllowedValues: [t3a.micro]
+    ConstraintDescription: Please choose a valid instance type.
+  AutoScalingTargetValue:
+    Type: Number
+    Default: 50
+    Description: Choose CPU usage percentage to scale.
+  MinContainers:
+    Type: Number
+    Default: 1
+    Description: Choose minimum number of containers.
+  MaxContainers:
+    Type: Number
+    Default: 10
+    Description: Choose maximum number of containers.
+  Certificate:
+    Type: String
+    # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
+    Default: "arn:aws:acm:region:123456789012:certificate/00000000-0000-0000-0000-000000000000"
+  HostedZoneName:
+    Type: String
+    Default: company.com
+  Subdomain:
+    Type: String
+    Default: myservice
+Mappings:
+  AWSRegionToAMI:
+    us-east-1:
+      AMIID: ami-0c1f575380708aa63
+Resources:
+  # Repository
+  ECR:
+    Type: "AWS::ECR::Repository"
+    Properties:
+      RepositoryName: roulette
+  # CloudWatch Log Group
+  CloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /ecs/Roulette
+      RetentionInDays: 14
+  # IAM
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EC2RoleForECSInstance
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ec2.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      Path: /
+      Policies:
+        - PolicyName: EC2PolicyForECSInstance
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    "ecs:CreateCluster",
+                    "ecs:DeregisterContainerInstance",
+                    "ecs:DiscoverPollEndpoint",
+                    "ecs:Poll",
+                    "ecs:RegisterContainerInstance",
+                    "ecs:StartTelemetrySession",
+                    "ecs:Submit*",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ]
+                Resource: "*"
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: TaskExecutionRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: RouletteTaskRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: RouletteTaskPolicy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sns:*
+                Resource: "*"
+  ECSServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ECSServiceRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      Path: /
+      Policies:
+        - PolicyName: ECSService
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                    "elasticloadbalancing:DeregisterTargets",
+                    "elasticloadbalancing:Describe*",
+                    "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+                    "elasticloadbalancing:RegisterTargets",
+                    "ec2:Describe*",
+                    "ec2:AuthorizeSecurityGroupIngress",
+                  ]
+                Resource: "*"
+  AutoscalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AutoscalingRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [application-autoscaling.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      Path: /
+      Policies:
+        - PolicyName: ServiceAutoscalingPolicy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    "application-autoscaling:*",
+                    "cloudwatch:DescribeAlarms",
+                    "cloudwatch:PutMetricAlarm",
+                    "ecs:DescribeServices",
+                    "ecs:UpdateService",
+                  ]
+                Resource: "*"
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles: [!Ref EC2Role]
+  # Security Groups
+  EcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: Roulette
+      GroupDescription: ECS Security Group for Roulette.
+      VpcId: !Ref VpcId
+  EcsSecurityGroupHTTPSInbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: "443"
+      ToPort: "443"
+      CidrIp: 0.0.0.0/0
+  EcsSecurityGroupSSHInbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: "22"
+      ToPort: "22"
+      CidrIp: 0.0.0.0/0 # Modify this IP
+  EcsSecurityGroupRedisInbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: "6379"
+      ToPort: "6379"
+      SourceSecurityGroupId: !Ref EcsSecurityGroup
+  EcsSecurityGroupALBPorts:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: "31000"
+      ToPort: "61000"
+      SourceSecurityGroupId: !Ref EcsSecurityGroup
+  # Redis
+  ElasticCacheSubnetGroup:
+    Type: "AWS::ElastiCache::SubnetGroup"
+    Properties:
+      CacheSubnetGroupName: Roulette
+      Description: "Roulette Elastic Cache Subnet Group"
+      SubnetIds: !Ref SubnetId
+  ElastiCache:
+    Type: "AWS::ElastiCache::ReplicationGroup"
+    Properties:
+      ReplicationGroupId: Roulette
+      ReplicationGroupDescription: Redis for Roulette
+      AutomaticFailoverEnabled: false
+      NumCacheClusters: 1
+      Engine: "redis"
+      CacheNodeType: "cache.t2.micro"
+      EngineVersion: "5.0.6"
+      CacheSubnetGroupName: !Ref ElasticCacheSubnetGroup
+      SecurityGroupIds: [!Ref "EcsSecurityGroup"]
+  # SNS
+  SNS:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: Roulette
+  # ECS Cluster
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      LaunchConfigurationName: Roulette
+      ImageId: !FindInMap [AWSRegionToAMI, !Ref "AWS::Region", AMIID]
+      AssociatePublicIpAddress: true
+      SecurityGroups: [!Ref "EcsSecurityGroup"]
+      InstanceType: !Ref "InstanceType"
+      IamInstanceProfile: !Ref "EC2InstanceProfile"
+      KeyName: !Ref "KeyName"
+      BlockDeviceMappings:
+        - DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeSize: 30
+            VolumeType: gp2
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          echo ECS_CLUSTER=Roulette >> /etc/ecs/ecs.config
+  ECSAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier: !Ref "SubnetId"
+      LaunchConfigurationName: !Ref "LaunchConfiguration"
+      MinSize: 1
+      MaxSize: !Ref "MaxSize"
+      DesiredCapacity: !Ref "DesiredCapacity"
+      Tags:
+        - Key: Name
+          Value: !Sub "ECS Instance - Roulette"
+          PropagateAtLaunch: true
+        - Key: Description
+          Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
+          PropagateAtLaunch: true
+  ECSCapacityProvider:
+    Type: AWS::ECS::CapacityProvider
+    DependsOn: ECSAutoScalingGroup
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref ECSAutoScalingGroup
+        ManagedScaling:
+          MaximumScalingStepSize: 1
+          MinimumScalingStepSize: 1
+          Status: ENABLED
+          TargetCapacity: 100
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    DependsOn: ECSAutoScalingGroup
+    Properties:
+      ClusterName: Roulette
+      ClusterSettings:
+        - Name: containerInsights
+          Value: "enabled"
+      CapacityProviders:
+        - !Ref ECSCapacityProvider
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          CapacityProvider: !Ref ECSCapacityProvider
+          Weight: 1
+  # Service
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: Roulette
+      ExecutionRoleArn: !Ref ExecutionRole
+      TaskRoleArn: !Ref TaskRole
+      ContainerDefinitions:
+        - Name: roulette
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECR}:${ImageTag}"
+          Cpu: 512
+          Memory: 512
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref "CloudwatchLogsGroup"
+              awslogs-region: !Ref "AWS::Region"
+              awslogs-stream-prefix: ecs-roulette
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+          Environment:
+            - Name: NODE_ENV
+              Value: !Ref DeployEnvironment
+            - Name: PORT
+              Value: !Ref ContainerPort
+            - Name: SNS_TOPIC_ARN
+              Value: !Ref SNS
+            - Name: REDIS_HOST
+              Value: !GetAtt "ElastiCache.PrimaryEndPoint.Address"
+            - Name: REGION
+              Value: !Ref AWS::Region
+  Service:
+    Type: AWS::ECS::Service
+    DependsOn: ECSApplicationLoadBalancerListener
+    Properties:
+      Cluster: !Ref "ECSCluster"
+      DesiredCount: 1
+      LoadBalancers:
+        - ContainerName: roulette
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref ECSApplicationLoadBalancerTargetGroup
+      Role: !Ref "ECSServiceRole"
+      TaskDefinition: !Ref "TaskDefinition"
+  ServiceScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    DependsOn: Service
+    Properties:
+      MaxCapacity: !Ref MaxContainers
+      MinCapacity: !Ref MinContainers
+      ResourceId:
+        !Join ["", [service/, !Ref "ECSCluster", /, !GetAtt [Service, Name]]]
+      RoleARN: !GetAtt [AutoscalingRole, Arn]
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+  ServiceAutoScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: RouletteServiceAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        ScaleInCooldown: 10
+        ScaleOutCooldown: 10
+        TargetValue: !Ref AutoScalingTargetValue
+  # Load Balancer
+  ECSApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: Roulette
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: "30"
+      Subnets: !Ref "SubnetId"
+      SecurityGroups: [!Ref "EcsSecurityGroup"]
+  ECSApplicationLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - ECSServiceRole
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref "ECSApplicationLoadBalancerTargetGroup"
+      LoadBalancerArn: !Ref "ECSApplicationLoadBalancer"
+      Port: "443"
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref Certificate
+  ECSApplicationLoadBalancerListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    DependsOn: ECSApplicationLoadBalancerListener
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref "ECSApplicationLoadBalancerTargetGroup"
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref "ECSApplicationLoadBalancerListener"
+      Priority: 1
+  ECSApplicationLoadBalancerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ECSApplicationLoadBalancer
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Name: RouletteTargetGroup
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref "VpcId"
+  # DNS
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ["", [!Ref HostedZoneName, .]]
+      Name: !Join ["", [!Ref Subdomain, ., !Ref HostedZoneName, .]]
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ECSApplicationLoadBalancer.DNSName
+        HostedZoneId: !GetAtt ECSApplicationLoadBalancer.CanonicalHostedZoneID
+Outputs:
+  ECSApplicationLoadBalancerDNS:
+    Description: Your Application Load Balancer DNS
+    Value: !Join ["", [!GetAtt [ECSApplicationLoadBalancer, DNSName]]]
+  Endpoint:
+    Description: Endpoint
+    Value: !Join ["", ["https://", !Ref DNSRecord]]
