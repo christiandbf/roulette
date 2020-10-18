@@ -8,9 +8,6 @@ Parameters:
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: Select a VPC that allows instances access to the Internet.
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Name of an existing EC2 KeyPair to enable SSH access to the ECS instances.
   SubnetId:
     Type: List<AWS::EC2::Subnet::Id>
     Description: Select at least two subnets in your selected VPC.
@@ -33,7 +30,7 @@ Parameters:
     Type: String
     Description: EC2 instance type.
     Default: t3a.micro
-    AllowedValues: [t3a.micro]
+    AllowedValues: [t3a.micro, t3.medium]
     ConstraintDescription: Please choose a valid instance type.
   AutoScalingTargetValue:
     Type: Number
@@ -49,14 +46,16 @@ Parameters:
     Description: Choose maximum number of containers.
   Certificate:
     Type: String
-    # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
     Default: "arn:aws:acm:region:123456789012:certificate/00000000-0000-0000-0000-000000000000"
+    Description: Update with the certificate ARN from Certificate Manager, which must exist in the same region.
   HostedZoneName:
     Type: String
     Default: company.com
+    Description: Update with hosted zone from Route53.
   Subdomain:
     Type: String
     Default: myservice
+    Description: Update with Subdomain name.
 Mappings:
   AWSRegionToAMI:
     us-east-1:
@@ -85,23 +84,23 @@ Resources:
               Service: [ec2.amazonaws.com]
             Action: ["sts:AssumeRole"]
       Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       Policies:
         - PolicyName: EC2PolicyForECSInstance
           PolicyDocument:
             Statement:
               - Effect: Allow
                 Action:
-                  [
-                    "ecs:CreateCluster",
-                    "ecs:DeregisterContainerInstance",
-                    "ecs:DiscoverPollEndpoint",
-                    "ecs:Poll",
-                    "ecs:RegisterContainerInstance",
-                    "ecs:StartTelemetrySession",
-                    "ecs:Submit*",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                  ]
+                  - "ecs:CreateCluster"
+                  - "ecs:DeregisterContainerInstance"
+                  - "ecs:DiscoverPollEndpoint"
+                  - "ecs:Poll"
+                  - "ecs:RegisterContainerInstance"
+                  - "ecs:StartTelemetrySession"
+                  - "ecs:Submit*"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
                 Resource: "*"
   ExecutionRole:
     Type: AWS::IAM::Role
@@ -150,15 +149,13 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  [
-                    "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-                    "elasticloadbalancing:DeregisterTargets",
-                    "elasticloadbalancing:Describe*",
-                    "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-                    "elasticloadbalancing:RegisterTargets",
-                    "ec2:Describe*",
-                    "ec2:AuthorizeSecurityGroupIngress",
-                  ]
+                  - "elasticloadbalancing:DeregisterInstancesFromLoadBalancer"
+                  - "elasticloadbalancing:DeregisterTargets"
+                  - "elasticloadbalancing:Describe*"
+                  - "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
+                  - "elasticloadbalancing:RegisterTargets"
+                  - "ec2:Describe*"
+                  - "ec2:AuthorizeSecurityGroupIngress"
                 Resource: "*"
   AutoscalingRole:
     Type: AWS::IAM::Role
@@ -177,13 +174,11 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  [
-                    "application-autoscaling:*",
-                    "cloudwatch:DescribeAlarms",
-                    "cloudwatch:PutMetricAlarm",
-                    "ecs:DescribeServices",
-                    "ecs:UpdateService",
-                  ]
+                  - "application-autoscaling:*"
+                  - "cloudwatch:DescribeAlarms"
+                  - "cloudwatch:PutMetricAlarm"
+                  - "ecs:DescribeServices"
+                  - "ecs:UpdateService"
                 Resource: "*"
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -205,14 +200,6 @@ Resources:
       FromPort: "443"
       ToPort: "443"
       CidrIp: 0.0.0.0/0
-  EcsSecurityGroupSSHInbound:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref EcsSecurityGroup
-      IpProtocol: tcp
-      FromPort: "22"
-      ToPort: "22"
-      CidrIp: 0.0.0.0/0 # Modify this IP
   EcsSecurityGroupRedisInbound:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -263,7 +250,6 @@ Resources:
       SecurityGroups: [!Ref "EcsSecurityGroup"]
       InstanceType: !Ref "InstanceType"
       IamInstanceProfile: !Ref "EC2InstanceProfile"
-      KeyName: !Ref "KeyName"
       BlockDeviceMappings:
         - DeviceName: "/dev/xvda"
           Ebs:
@@ -273,6 +259,7 @@ Resources:
         Fn::Base64: |
           #!/bin/bash -xe
           echo ECS_CLUSTER=Roulette >> /etc/ecs/ecs.config
+          echo ECS_RESERVED_MEMORY=256 >> /etc/ecs/ecs.config
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -295,13 +282,10 @@ Resources:
       AutoScalingGroupProvider:
         AutoScalingGroupArn: !Ref ECSAutoScalingGroup
         ManagedScaling:
-          MaximumScalingStepSize: 1
-          MinimumScalingStepSize: 1
           Status: ENABLED
           TargetCapacity: 100
   ECSCluster:
     Type: AWS::ECS::Cluster
-    DependsOn: ECSAutoScalingGroup
     Properties:
       ClusterName: Roulette
       ClusterSettings:
@@ -346,7 +330,6 @@ Resources:
               Value: !Ref AWS::Region
   Service:
     Type: AWS::ECS::Service
-    DependsOn: ECSApplicationLoadBalancerListener
     Properties:
       Cluster: !Ref "ECSCluster"
       DesiredCount: 1
@@ -376,8 +359,8 @@ Resources:
       TargetTrackingScalingPolicyConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
-        ScaleInCooldown: 10
-        ScaleOutCooldown: 10
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
         TargetValue: !Ref AutoScalingTargetValue
   # Load Balancer
   ECSApplicationLoadBalancer:
