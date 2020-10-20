@@ -36,7 +36,7 @@ class Bet extends Entity<Props> {
     this.amount = props.amount;
   }
 
-  public getrouletteId(): string {
+  public getRouletteId(): string {
     return this.rouletteId;
   }
 

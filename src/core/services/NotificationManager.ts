@@ -12,17 +12,17 @@ interface Params {
 }
 
 abstract class NotificationManager {
-  private static notifcations: Map<string, Notification> = new Map();
+  private static notifications: Map<string, Notification> = new Map();
 
   static getInstance(params: Params): Notification {
-    let notification: Notification | undefined = this.notifcations.get(
+    let notification: Notification | undefined = this.notifications.get(
       params.protocol
     );
     if (notification) return notification;
     if (params.protocol === NotificationProtocol.SNS)
       notification = new NotificationSNS();
     assert.ok(notification, `Protocol ${params.protocol} is not valid`);
-    this.notifcations.set(params.protocol, notification);
+    this.notifications.set(params.protocol, notification);
 
     return notification;
   }

@@ -24,7 +24,7 @@ class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
     const betWinners: Array<Bet> = bets.filter((bet: Bet): boolean =>
       bet.getOption().equals(rouletteResult)
     );
-    const betLlossers: Array<Bet> = bets.filter(
+    const betLosers: Array<Bet> = bets.filter(
       (bet: Bet): boolean => !bet.getOption().equals(rouletteResult)
     );
     await this.repository.roulette.update(roulette);
@@ -35,7 +35,7 @@ class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
       betWinners: betWinners.map(
         (bet: Bet): BetResponseModel => BetMapper.toModel(bet)
       ),
-      betLosers: betLlossers.map(
+      betLosers: betLosers.map(
         (bet: Bet): BetResponseModel => BetMapper.toModel(bet)
       )
     };

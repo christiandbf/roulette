@@ -79,7 +79,7 @@ class BetRepositoryRedis extends RepositoryRedis<Bet, BetDTO>
     return {
       id: bet.getId(),
       selection: bet.getOption().value,
-      rouletteId: bet.getrouletteId(),
+      rouletteId: bet.getRouletteId(),
       userId: bet.getUserId(),
       amount: bet.getAmount()
     };

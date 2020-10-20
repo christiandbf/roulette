@@ -16,7 +16,7 @@ const BetMapper: Mapper<Bet, BetRequestModel, BetResponseModel> = {
   },
   toModel: (bet: Bet): BetResponseModel => ({
     id: bet.getId(),
-    rouletteId: bet.getrouletteId(),
+    rouletteId: bet.getRouletteId(),
     amount: bet.getAmount(),
     selection: bet.getOption().value,
     userId: bet.getUserId()
