@@ -1,24 +1,24 @@
 import UseCase from './UseCase';
 import {
-  RouletteRequestModel,
-  RouletteResponseModel
+	RouletteRequestModel,
+	RouletteResponseModel
 } from '../models/Roulette';
 import RouletteMapper from '../mappers/Roulette';
 
 class CreateRouletteUseCase extends UseCase<
-  RouletteRequestModel,
-  RouletteResponseModel
+	RouletteRequestModel,
+	RouletteResponseModel
 > {
-  constructor() {
-    super();
-  }
+	constructor() {
+		super();
+	}
 
-  async execute(request: RouletteRequestModel): Promise<RouletteResponseModel> {
-    const roulette = RouletteMapper.toEntity(request);
-    await this.repository.roulette.create(roulette);
+	async execute(request: RouletteRequestModel): Promise<RouletteResponseModel> {
+		const roulette = RouletteMapper.toEntity(request);
+		await this.repository.roulette.create(roulette);
 
-    return RouletteMapper.toModel(roulette);
-  }
+		return RouletteMapper.toModel(roulette);
+	}
 }
 
 export default CreateRouletteUseCase;

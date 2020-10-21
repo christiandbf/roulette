@@ -1,5 +1,7 @@
 # Roulette
 
+[![Build Status](https://travis-ci.org/christiandbf/roulette.svg?branch=master)](https://travis-ci.org/christiandbf/roulette)
+
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=christiandbf_roulette)](https://sonarcloud.io/dashboard?id=christiandbf_roulette)
 
 Roulette Rest API built using TypeScript and Redis.
@@ -96,9 +98,22 @@ PUT /roulettes/close/:id
 
 ```plain
 {
-  "result": "RED",
-  "betWinners": ["20ed3270-a603-11ea-a08a-315bb84a695d"],
-  "betLlossers": []
+  "result": "32",
+  "roulette": {
+    "id": "7ac43170-1333-11eb-8f2d-b937f300a09f",
+    "isOpen": false,
+    "name": "Casino Royale 007"
+  },
+  "betWinners": [],
+  "betLosers": [
+    {
+      "id": "8b6b3190-1333-11eb-8f2d-b937f300a09f",
+      "rouletteId": "7ac43170-1333-11eb-8f2d-b937f300a09f",
+      "amount": 1000,
+      "selection": "BLACK",
+      "userId": "20ed3270-a603-11ea-a08a-315bb84a695d"
+    }
+  ]
 }
 ```
 

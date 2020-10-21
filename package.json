@@ -15,7 +15,8 @@
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "build": "npm-run-all clean lint prettier-format tsc",
     "dev": "nodemon --watch src -e ts --exec ts-node ./src/api/server.ts",
-    "start": "node ./dist/api/server.js"
+    "start": "node ./dist/api/server.js",
+    "test": "jest"
   },
   "husky": {
     "hooks": {
@@ -50,17 +51,22 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.2",
-    "nodemon": "^2.0.2",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.0.5",
+    "ts-node": "^8.3.0",
+    "ts-jest": "^24.0.2",
+    "supertest": "^4.0.2",
     "rimraf": "^3.0.0",
-    "ts-node": "^8.3.0"
+    "prettier": "^2.0.5",
+    "npm-run-all": "^4.1.5",
+    "nodemon": "^2.0.2",
+    "lint-staged": "^10.2.2",
+    "jest": "^24.9.0",
+    "husky": "^4.2.5",
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-config-prettier": "^6.11.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@types/supertest": "^2.0.8",
+    "@types/jest": "^24.0.17"
   }
 }

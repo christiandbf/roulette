@@ -1,10 +1,10 @@
 export interface RouletteRequestModel {
-  id?: string;
-  name: string;
+	id?: string;
+	name: string;
 }
 
 export interface RouletteResponseModel {
-  id: string;
-  isOpen: boolean;
-  name: string;
+	id: string;
+	isOpen: boolean;
+	name: string;
 }
