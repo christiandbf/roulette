@@ -19,19 +19,16 @@ class OptionValueObject extends ValueObject<Props, string> {
 	}
 
 	static getRandomColorOption(): OptionValueObject {
-		//NOSONAR
 		const random: number = Math.ceil(Math.random() * this.COLORS.length) - 1;
 		return new OptionValueObject({ selection: this.COLORS[random] });
 	}
 
 	static getRandomNumberOption(): OptionValueObject {
-		//NOSONAR
 		const random: number = Math.ceil(Math.random() * this.TO_NUMBER);
 		return new OptionValueObject({ selection: random.toString() });
 	}
 
 	static getRandomOption(): OptionValueObject {
-		//NOSONAR
 		const type: number = Math.ceil(Math.random() * 2);
 		if (type === 1) return this.getRandomColorOption();
 		else return this.getRandomNumberOption();
