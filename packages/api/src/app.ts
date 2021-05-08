@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import routes from './routes';
 
 const app: Application = express();
+app.disable('x-powered-by');
 
 app.use(morgan('short'));
 app.use(express.urlencoded({ extended: false }));

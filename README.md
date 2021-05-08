@@ -1,6 +1,8 @@
 # Roulette
 
-[![Build Status](https://travis-ci.org/christiandbf/roulette.svg?branch=master)](https://travis-ci.org/christiandbf/roulette)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
+[![christiandbf](https://circleci.com/gh/christiandbf/roulette.svg?style=svg)](<LINK>)
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=christiandbf_roulette)](https://sonarcloud.io/dashboard?id=christiandbf_roulette)
 
@@ -15,13 +17,13 @@ Roulette Rest API built using TypeScript and Redis.
 To build the Docker image, use the `docker build` command:
 
 ```shell
-docker build . -t roulette:latest
+docker build . -t roulette:latest -f Dockerfile.api
 ```
 
 To stop the build on a specific stage, use the `target` option:
 
 ```shell
-docker build --target builder -t roulette:latest .
+docker build --target builder -t roulette:latest . -f Dockerfile.api
 ```
 
 ## Run
