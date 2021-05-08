@@ -37,6 +37,9 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+      - run:
+          name: Code coverage report
+          command: npx codecov
 
 workflows:
   # Below is the definition of your workflow.
