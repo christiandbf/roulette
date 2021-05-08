@@ -10,7 +10,8 @@ const BetMapper: Mapper<Bet, BetRequestModel, BetResponseModel> = {
 			option,
 			amount: request.amount,
 			rouletteId: request.rouletteId,
-			userId: request.userId
+			userId: request.userId,
+			id: request.id || undefined
 		});
 		return bet;
 	},

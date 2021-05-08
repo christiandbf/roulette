@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bet mapper toEntity 1`] = `
+Bet {
+  "MAX_AMOUNT": 10000,
+  "UUID_REGEXP": /\\^\\[0-9a-f\\]\\{8\\}-\\[0-9a-f\\]\\{4\\}-\\[0-5\\]\\[0-9a-f\\]\\{3\\}-\\[089ab\\]\\[0-9a-f\\]\\{3\\}-\\[0-9a-f\\]\\{12\\}\\$/i,
+  "amount": 1000,
+  "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "option": OptionValueObject {
+    "SELECTION_REGEX": /\\^\\(\\[1-9\\]\\|\\[12\\]\\\\d\\|3\\[0-6\\]\\)\\$\\|\\^\\(BLACK\\|RED\\)\\$/i,
+    "props": Object {
+      "selection": "1",
+    },
+    "value": "1",
+  },
+  "props": Object {
+    "amount": 1000,
+    "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+    "option": OptionValueObject {
+      "SELECTION_REGEX": /\\^\\(\\[1-9\\]\\|\\[12\\]\\\\d\\|3\\[0-6\\]\\)\\$\\|\\^\\(BLACK\\|RED\\)\\$/i,
+      "props": Object {
+        "selection": "1",
+      },
+      "value": "1",
+    },
+    "rouletteId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+    "userId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  },
+  "rouletteId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "userId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+}
+`;
+
+exports[`Bet mapper toModel 1`] = `
+Object {
+  "amount": 100,
+  "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "rouletteId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "selection": "1",
+  "userId": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+}
+`;
