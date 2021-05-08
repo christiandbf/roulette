@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+if [[ "$HUSKY_SKIP_HOOKS" == "1" ]]; then
+  exit 0
+fi
+
+exec < /dev/tty && npx cz --hook || true

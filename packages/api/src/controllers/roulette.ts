@@ -8,7 +8,7 @@ import {
 	ListRouletteUseCase,
 	RouletteResponseModel,
 	GameResponseModel
-} from '../../core';
+} from '@roulette/core';
 
 const router: Router = Router();
 
@@ -73,7 +73,7 @@ router.get(
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const listRouletteUseCase = new ListRouletteUseCase();
-			const rouletteDTOs = await listRouletteUseCase.execute({});
+			const rouletteDTOs = await listRouletteUseCase.execute();
 			res.status(200).send(rouletteDTOs);
 		} catch (error) {
 			next(error);

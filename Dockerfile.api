@@ -1,0 +1,17 @@
+FROM node:16.0.0-alpine AS builder
+
+WORKDIR /usr/src/app
+COPY . .
+
+RUN npm i
+RUN npm run build:api
+
+FROM node:16.0.0-alpine AS main
+
+WORKDIR /usr/src/app
+
+COPY --from=builder ./usr/src/app/packages/api/package* ./
+COPY --from=builder ./usr/src/app/packages/api/node_modules ./node_modules
+COPY --from=builder ./usr/src/app/packages/api/dist ./dist
+
+CMD npm start

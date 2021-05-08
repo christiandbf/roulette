@@ -1,0 +1,29 @@
+{
+  "name": "@roulette/core",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "private": true,
+  "scripts": {
+    "build": "tsc --build --verbose",
+    "build:watch": "tsc --build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/ioredis": "^4.14.9",
+    "@types/node": "^13.9.5",
+    "@types/uuid": "^7.0.2",
+    "aws-sdk": "^2.691.0",
+    "ioredis": "^4.16.1",
+    "shallow-equal-object": "^1.1.1",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/validator": "^13.1.3"
+  }
+}

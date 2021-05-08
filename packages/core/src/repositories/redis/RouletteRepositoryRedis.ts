@@ -10,7 +10,8 @@ interface RouletteDTO {
 	name: string;
 }
 
-class RouletteRepositoryRedis extends RepositoryRedis<Roulette, RouletteDTO>
+class RouletteRepositoryRedis
+	extends RepositoryRedis<Roulette, RouletteDTO>
 	implements RouletteRepository {
 	private readonly BASE_ROULETTE: string = `${this.BASE_NAMESPACE}:ROULETTE`;
 

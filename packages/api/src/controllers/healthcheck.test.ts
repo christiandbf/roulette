@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import app from '../../../src/api/app';
+import app from '../app';
 
 describe('GET / - a simple api healthcheck endpoint', () => {
 	it('API runing properly', () => {
