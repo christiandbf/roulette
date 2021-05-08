@@ -14,7 +14,8 @@ interface BetDTO {
 	amount: number;
 }
 
-class BetRepositoryRedis extends RepositoryRedis<Bet, BetDTO>
+class BetRepositoryRedis
+	extends RepositoryRedis<Bet, BetDTO>
 	implements BetRepository {
 	private readonly BASE_BET: string = `${this.BASE_NAMESPACE}:BET`;
 

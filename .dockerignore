@@ -2,7 +2,9 @@
 **
 
 # Allow files and directories
-!/src/**
-!/package*.json
-!/tsconfig.json
-!/tslint.json
+!/packages/api/src
+!/packages/core/src
+!/**/lerna.json
+!/**/package*.json
+!/**/tsconfig.json
+!/**/tslint.json

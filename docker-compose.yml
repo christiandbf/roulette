@@ -5,10 +5,10 @@ version: "3"
 services:
   roulette_api:
     container_name: roulette
-    build: .
+    build: ./Dockerfile.api
     restart: unless-stopped
-    command: npm run dev
-    env_file: .env
+    command: npm run start
+    env_file: ./packages/api/.env
     environment:
       NODE_ENV: "development"
       PORT: 3000
@@ -18,9 +18,6 @@ services:
       REDIS_DB: 0
     ports:
       - "3000:3000"
-    volumes:
-      - ./:/usr/src/app
-      - ./node_modules:/usr/src/app/node_modules
     links:
       - redis
 
