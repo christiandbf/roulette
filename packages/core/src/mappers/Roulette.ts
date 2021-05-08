@@ -11,7 +11,7 @@ const RouletteMapper: Mapper<
 	RouletteResponseModel
 > = {
 	toEntity: (request: RouletteRequestModel): Roulette => {
-		return new Roulette({ name: request.name });
+		return new Roulette({ name: request.name, id: request.id || undefined });
 	},
 	toModel: (roulette: Roulette): RouletteResponseModel => ({
 		id: roulette.getId(),

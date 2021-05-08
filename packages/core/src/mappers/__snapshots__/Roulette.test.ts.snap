@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Roulette mapper toEntity 1`] = `
+Roulette {
+  "MIN_CHARACTERS": 2,
+  "UUID_REGEXP": /\\^\\[0-9a-f\\]\\{8\\}-\\[0-9a-f\\]\\{4\\}-\\[0-5\\]\\[0-9a-f\\]\\{3\\}-\\[089ab\\]\\[0-9a-f\\]\\{3\\}-\\[0-9a-f\\]\\{12\\}\\$/i,
+  "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "isOpen": false,
+  "name": "Royal 007",
+  "props": Object {
+    "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+    "name": "Royal 007",
+  },
+}
+`;
+
+exports[`Roulette mapper toModel 1`] = `
+Object {
+  "id": "ff6960b0-b015-11eb-8b4e-bd5c14d98229",
+  "isOpen": false,
+  "name": "Royal 007",
+}
+`;
