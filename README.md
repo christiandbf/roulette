@@ -6,6 +6,8 @@
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=christiandbf_roulette)](https://sonarcloud.io/dashboard?id=christiandbf_roulette)
 
+[![codecov](https://codecov.io/gh/christiandbf/roulette/branch/master/graph/badge.svg?token=Z7K979QBPO)](https://codecov.io/gh/christiandbf/roulette)
+
 Roulette Rest API built using TypeScript and Redis.
 
 ## Architecture
