@@ -8,10 +8,10 @@ module.exports = {
 	// Start from current coverage and increase over time
 	coverageThreshold: {
 		global: {
-			statements: 14,
-			branches: 0,
-			lines: 14,
-			functions: 1
+			statements: 35,
+			branches: 30,
+			lines: 36,
+			functions: 28
 		}
 	},
 	projects: ['./packages/api/jest.config.js', './packages/core/jest.config.js']
