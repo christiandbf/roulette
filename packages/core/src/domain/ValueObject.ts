@@ -17,7 +17,9 @@ abstract class ValueObject<Props, Value> {
 		if (vo === null || vo === undefined) return false;
 		if (vo.props === undefined) return false;
 
-		return shallowEqual(this.props, vo.props);
+		return (
+			shallowEqual(this.props, vo.props) && shallowEqual(this.value, vo.value)
+		);
 	}
 }
 
