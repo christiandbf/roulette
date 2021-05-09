@@ -13,10 +13,7 @@ abstract class ValueObject<Props, Value> {
 		return this.props;
 	}
 
-	public equals(vo?: ValueObject<Props, Value>): boolean {
-		if (vo === null || vo === undefined) return false;
-		if (vo.props === undefined) return false;
-
+	public equals(vo: ValueObject<Props, Value>): boolean {
 		return (
 			shallowEqual(this.props, vo.props) && shallowEqual(this.value, vo.value)
 		);
