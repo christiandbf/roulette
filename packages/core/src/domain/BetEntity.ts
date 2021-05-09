@@ -20,11 +20,10 @@ class Bet extends Entity<Props> {
 
 	constructor(props: Props) {
 		super(props, props.id);
-		assert.ok(props.option, 'Option should be provided');
 		assert.ok(props.amount < this.MAX_AMOUNT, 'Maximum bet amount exceeded');
 		assert.ok(
 			this.UUID_REGEXP.test(props.rouletteId),
-			'User ID is not a valid UUID'
+			'Roulette ID is not a valid UUID'
 		);
 		assert.ok(
 			this.UUID_REGEXP.test(props.userId),
