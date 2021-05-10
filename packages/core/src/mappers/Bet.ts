@@ -6,14 +6,13 @@ import { BetRequestModel, BetResponseModel } from '../models/Bet';
 const BetMapper: Mapper<Bet, BetRequestModel, BetResponseModel> = {
 	toEntity: (request: BetRequestModel): Bet => {
 		const option: Option = new Option({ selection: request.selection });
-		const bet: Bet = new Bet({
+		return new Bet({
 			option,
 			amount: request.amount,
 			rouletteId: request.rouletteId,
 			userId: request.userId,
 			id: request.id || undefined
 		});
-		return bet;
 	},
 	toModel: (bet: Bet): BetResponseModel => ({
 		id: bet.getId(),

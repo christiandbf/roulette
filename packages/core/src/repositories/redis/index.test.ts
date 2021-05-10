@@ -15,10 +15,10 @@ test('Should instantiate repositories', () => {
 	const repository = redisRepositoryFactory();
 
 	expect(RedisMock).toHaveBeenLastCalledWith({
-		host: '127.127.127.127',
-		port: 1000,
-		password: 'password',
-		db: 12
+		host: process.env['REDIS_HOST'],
+		port: parseInt(process.env['REDIS_PORT'] ?? ''),
+		password: process.env['REDIS_PASSWORD'],
+		db: parseInt(process.env['REDIS_DB'] ?? '')
 	});
 	expect(RedisMock).toHaveBeenCalledTimes(1);
 	expect(RouletteRepositoryRedisMock).toHaveBeenCalledWith(new RedisMock());

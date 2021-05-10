@@ -47,7 +47,7 @@ class BetRepositoryRedis
 			`${this.BASE_BET}:${id}`
 		);
 		const bets: Array<Bet | null> = await Promise.all(
-			betIds.map((id) => this.findById(id))
+			betIds.map((betId) => this.findById(betId))
 		);
 
 		return bets.filter((bet): bet is Bet => bet !== null);

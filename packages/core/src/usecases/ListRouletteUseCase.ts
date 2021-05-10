@@ -11,12 +11,10 @@ class ListRouletteUseCase extends UseCase<void, RouletteResponseModel[]> {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async execute(request: void): Promise<RouletteResponseModel[]> {
 		const roulettes: Roulette[] = await this.repository.roulette.find();
-		const rouletteResponseModels: RouletteResponseModel[] = roulettes.map(
+		return roulettes.map(
 			(roulette: Roulette): RouletteResponseModel =>
 				RouletteMapper.toModel(roulette)
 		);
-
-		return rouletteResponseModels;
 	}
 }
 
