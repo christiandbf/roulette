@@ -2,7 +2,7 @@
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-[![christiandbf](https://circleci.com/gh/christiandbf/roulette.svg?style=svg)](<LINK>)
+[![christiandbf](https://circleci.com/gh/christiandbf/roulette.svg?style=svg)](https://app.circleci.com/pipelines/github/christiandbf/roulette)
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=christiandbf_roulette)](https://sonarcloud.io/dashboard?id=christiandbf_roulette)
 
