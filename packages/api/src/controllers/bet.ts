@@ -20,8 +20,8 @@ router.post(
 			const { selection, rouletteId, amount } = req.body;
 			const userId: string | undefined = req.get('user');
 			assert.ok(userId, 'User ID has not been sent');
-			const createRouletteUseCase = new CreateBetUseCase();
-			const betResponseModel: BetResponseModel = await createRouletteUseCase.execute(
+			const createBetUseCase = new CreateBetUseCase();
+			const betResponseModel: BetResponseModel = await createBetUseCase.execute(
 				{
 					userId: userId,
 					amount: amount,
