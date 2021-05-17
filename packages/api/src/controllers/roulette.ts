@@ -7,7 +7,8 @@ import {
 	CloseRouletteUseCase,
 	ListRouletteUseCase,
 	RouletteResponseModel,
-	GameResponseModel
+	GameResponseModel,
+	RepositoryManager
 } from '@roulette/core';
 
 const router: Router = Router();
@@ -19,7 +20,8 @@ router.post(
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const { name } = req.body;
-			const createRouletteUseCase = new CreateRouletteUseCase();
+			const repository = RepositoryManager.getInstance();
+			const createRouletteUseCase = new CreateRouletteUseCase(repository);
 			const rouletteResponseModel: RouletteResponseModel = await createRouletteUseCase.execute(
 				{
 					name: name
@@ -39,7 +41,8 @@ router.put(
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const rouletteId: string = req.params.id;
-			const openRouletteUseCase = new OpenRouletteUseCase();
+			const repository = RepositoryManager.getInstance();
+			const openRouletteUseCase = new OpenRouletteUseCase(repository);
 			const rouletteResponseModel = await openRouletteUseCase.execute(
 				rouletteId
 			);
@@ -57,7 +60,8 @@ router.put(
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const rouletteId: string = req.params.id;
-			const closeRouletteUseCase = new CloseRouletteUseCase();
+			const repository = RepositoryManager.getInstance();
+			const closeRouletteUseCase = new CloseRouletteUseCase(repository);
 			const gameResponseModel: GameResponseModel = await closeRouletteUseCase.execute(
 				rouletteId
 			);
@@ -72,7 +76,8 @@ router.get(
 	`/`,
 	async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
-			const listRouletteUseCase = new ListRouletteUseCase();
+			const repository = RepositoryManager.getInstance();
+			const listRouletteUseCase = new ListRouletteUseCase(repository);
 			const rouletteDTOs = await listRouletteUseCase.execute();
 			res.status(200).send(rouletteDTOs);
 		} catch (error) {

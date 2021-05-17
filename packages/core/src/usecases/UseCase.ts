@@ -1,12 +1,7 @@
-import RepositoryManager from '../repositories';
 import Repository from '../repositories/Repository';
 
 abstract class UseCase<RequestModel, ResponseModel> {
-	protected readonly repository: Repository;
-
-	constructor() {
-		this.repository = RepositoryManager.getInstance();
-	}
+	constructor(protected readonly repository: Repository) {}
 
 	abstract execute(
 		request: RequestModel

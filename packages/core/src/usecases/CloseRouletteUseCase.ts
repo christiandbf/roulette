@@ -7,10 +7,11 @@ import { GameResponseModel } from '../models/Game';
 import { BetResponseModel } from '../models/Bet';
 import RouletteMapper from '../mappers/Roulette';
 import BetMapper from '../mappers/Bet';
+import Repository from '../repositories/Repository';
 
 class CloseRouletteUseCase extends UseCase<string, GameResponseModel> {
-	constructor() {
-		super();
+	constructor(repository: Repository) {
+		super(repository);
 	}
 
 	async execute(id: string): Promise<GameResponseModel> {

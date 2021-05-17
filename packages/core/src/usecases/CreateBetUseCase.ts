@@ -4,10 +4,11 @@ import Bet from '../domain/BetEntity';
 import Roulette from '../domain/RouletteEntity';
 import { BetRequestModel, BetResponseModel } from '../models/Bet';
 import BetMapper from '../mappers/Bet';
+import Repository from '../repositories/Repository';
 
 class CreateBetUseCase extends UseCase<BetRequestModel, BetResponseModel> {
-	constructor() {
-		super();
+	constructor(repository: Repository) {
+		super(repository);
 	}
 
 	async execute(request: BetRequestModel): Promise<BetResponseModel> {

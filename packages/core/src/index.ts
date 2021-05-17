@@ -8,3 +8,5 @@ export { default as CreateBetUseCase } from './usecases/CreateBetUseCase';
 export { default as OpenRouletteUseCase } from './usecases/OpenRouletteUseCase';
 export { default as CloseRouletteUseCase } from './usecases/CloseRouletteUseCase';
 export { default as ListRouletteUseCase } from './usecases/ListRouletteUseCase';
+
+export { default as RepositoryManager } from './repositories';

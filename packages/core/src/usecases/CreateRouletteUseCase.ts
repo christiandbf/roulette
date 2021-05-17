@@ -4,13 +4,14 @@ import {
 	RouletteResponseModel
 } from '../models/Roulette';
 import RouletteMapper from '../mappers/Roulette';
+import Repository from '../repositories/Repository';
 
 class CreateRouletteUseCase extends UseCase<
 	RouletteRequestModel,
 	RouletteResponseModel
 > {
-	constructor() {
-		super();
+	constructor(repository: Repository) {
+		super(repository);
 	}
 
 	async execute(request: RouletteRequestModel): Promise<RouletteResponseModel> {

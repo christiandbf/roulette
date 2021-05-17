@@ -6,10 +6,11 @@ import RouletteMapper from '../mappers/Roulette';
 import Notification, {
 	NotificationProtocol
 } from '../services/NotificationManager';
+import Repository from '../repositories/Repository';
 
 class OpenRouletteUseCase extends UseCase<string, RouletteResponseModel> {
-	constructor() {
-		super();
+	constructor(repository: Repository) {
+		super(repository);
 	}
 
 	async execute(id: string): Promise<RouletteResponseModel> {
