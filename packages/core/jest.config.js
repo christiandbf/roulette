@@ -102,7 +102,7 @@ module.exports = {
 	// reporters: undefined,
 
 	// Automatically reset mock state between every test
-	// resetMocks: false,
+	resetMocks: false,
 
 	// Reset the module registry before running each individual test
 	// resetModules: false,
@@ -111,7 +111,7 @@ module.exports = {
 	// resolver: null,
 
 	// Automatically restore mock state between every test
-	// restoreMocks: false,
+	restoreMocks: false,
 
 	// The root directory that Jest should scan for tests and modules within
 	// rootDir: null,
