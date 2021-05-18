@@ -8,7 +8,7 @@ jest.mock('../repositories');
 
 describe('Execute close roulette use case', () => {
 	const optionWinner = new Option({ selection: 'RED' });
-	const optionLosser = new Option({ selection: 'BLACK' });
+	const optionLoser = new Option({ selection: 'BLACK' });
 	const roulette = new Roulette({
 		name: 'Royal',
 		id: 'ff6960b0-b015-11eb-8b4e-bd5c14d98227',
@@ -23,7 +23,7 @@ describe('Execute close roulette use case', () => {
 	});
 	const betLoser = new Bet({
 		amount: 1000,
-		option: optionLosser,
+		option: optionLoser,
 		rouletteId: 'ff6960b0-b015-11eb-8b4e-bd5c14d98227',
 		userId: 'ff6960b0-b015-11eb-8b4e-bd5c14d98444',
 		id: 'ff6960b0-b015-11eb-8b4e-bd5c14d98229'
